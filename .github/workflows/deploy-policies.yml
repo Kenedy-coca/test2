@@ -1,25 +1,16 @@
-name: "Deploy Policies"
+name: Echo Greeting
 
 on:
   workflow_dispatch:
     inputs:
-      stage:
-        description: "AZURE environment to deploy"
+      greeting:
+        description: 'Greeting message'
         required: true
-        type: choice
-        options: ['DEV', 'QA', 'UAT', 'PROD']
-        default: DEV
-
-env:
-  DAY_OF_WEEK: Monday
 
 jobs:
-  greeting_job:
+  echo-greeting:
     runs-on: ubuntu-latest
-    env:
-      Greeting: Hello
+
     steps:
-      - name: "Say Hello Mona it's Monday"
-        run: echo "$Greeting $First_Name. Today is $DAY_OF_WEEK!"
-        env:
-          First_Name: Mona
+      - name: Echo Greeting
+        run: echo "Greeting: ${{ github.event.inputs.greeting }}"
