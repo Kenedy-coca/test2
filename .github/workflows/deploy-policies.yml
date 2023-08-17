@@ -1,16 +1,30 @@
-name: Echo Greeting
+name: "Deploy Policies"
 
 on:
   workflow_dispatch:
     inputs:
-      greeting:
-        description: 'Greeting message'
+      stage:
+        description: "AZURE environment to deploy"
         required: true
-
+        type: choice
+        options: ['DEV', 'QA', 'UAT', 'PROD']
+        default: DEV
+      suffix:
+        description: "Stage suffix to deploy"
+        required: true
+        type: string
+        default: _dev
 jobs:
-  echo-greeting:
+  build-and-deploy:
     runs-on: ubuntu-latest
-
+    environment:
+      name: ${{ format('{0}_{1}', github.event.inputs.region, github.event.inputs.stage )}}
     steps:
-      - name: Echo Greeting
-        run: echo "Greeting: ${{ github.event.inputs.greeting }}"
+      - name: Checkout source code
+        uses: actions/checkout@v3
+      - name: Setup stage variables
+        run: |
+          echo "Value of BRANDING_TEMPLATES_BASE_URL: $BRANDING_TEMPLATES_BASE_URL"
+
+        env:
+          BRANDING_TEMPLATES_BASE_URL: ${{ vars.BRANDING_TEMPLATES_BASE_URL }}
